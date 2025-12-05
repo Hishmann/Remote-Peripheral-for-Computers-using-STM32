@@ -1,0 +1,48 @@
+// Endpoint activation --
+
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (1 << 15); // USB active endpoint (only needed for non-zero ep)
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (0b00 << 18); // Endpoint type
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (0x00); // bits (10:0) for maximum packet size for non-zero ep
+//    UBS_OTG_FS_IE0 -> DIEPCTL |= (0b0000 << 22); // TxFIFO number (only for IN eps)
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (1 << 31); // ep enable
+
+// Endpoint deactivation --
+
+// Clear this to deactivate
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (1 << 15); // USB active endpoint (only needed for non-zero ep)
+
+// Setting the global OUT NAK --
+
+//    USB_OTG_FS_D -> DCTL = (1 << 9); // SGONAK (7 for IN)
+//    wait for USB_OTG_GINTSTS_GONAKEFF interrupt
+//    USB_OTG_FS -> GINTMSK &= ~(1 << 7); // mask GONAKEFFM temporarily (6 for GINAKEFFM)
+//    USB_OTG_FS_D -> DCTL = (1 << 10); // CGONAK (8 for IN)
+//    USB_OTG_FS -> GINTMSK |= (1 << 7); // unmask this
+
+// Setting the IN endpoint NAK --
+
+//    USB_OTG_FS_IE1 -> DIEPCTL = (1 << 27); // set NAK
+//    wait INEPNE from DIEPINT and temp mask
+//    USB_OTG_FS_IE1 -> DIEPCTL = (1 << 26); // clear NAK
+//    unmask INEPNE
+
+// Disabling an OUT endpoint --
+
+//    USB_OTG_FS_D -> DCTL = (1 << 9);
+//    wait for GONAKEFF interrupt
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (1 << 30); // EP disable
+//    USB_OTG_FS_OE0 -> DOEPCTL |= (1 << 27); // Set NAK
+//    wait for EPDISD from DOEPINT (bit 1) (similar rules to STUP with OEPINT -> endpoint num -> then this)
+//    USB_OTG_FS_D -> DCTL = (1 << 10); // CGONAK (8 for IN)
+
+// Disabling an IN endpoint --
+
+//    USB_OTG_FS_IE1 -> DIEPCTL = (1 << 27); // set NAK
+//    wait for INEPNE from DIEPINT (bit 6) (similar rules to STUP with OEPINT -> endpoint num -> then this)
+//    USB_OTG_FS_OE0 -> DIEPCTL |= (1 << 30); // EP disable
+//    USB_OTG_FS_OE0 -> DIEPCTL |= (1 << 27); // Set NAK
+//    wait for EPDISD from DIEPINT (bit 1) (similar rules to STUP with OEPINT -> endpoint num -> then this)
+// 	  read DIEPTSIZ for the periodic IN EP to find how much data was transferred on the ep
+//    USB_OTG_FS -> GRSTCTL |= (0b00000 << 6); // TxFIFO number
+//    USB_OTG_FS -> GRSTCTL |= (1 << 5); // TxFIFO flush
+//    do the above 2 steps until TxFIFO flush is not one anymore

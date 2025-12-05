@@ -1,0 +1,2 @@
+../Core/lcd_utilities/lcd_util.c:3:6:LCD_PrintString16	2
+../Core/lcd_utilities/lcd_util.c:10:6:LCD_PrintUnsigned32Hex	4

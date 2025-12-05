@@ -1,0 +1,13 @@
+USB_int.rar
+
+./Debug
+
+.settings
+
+./Drivers/STM32F4xx_HAL_Driver
+
+STM32F407IGHX_FLASH.ld
+
+STM32F407IGHX_RAM.ld
+
+USB_int Debug.launch

@@ -146,7 +146,7 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Volume up";
-				  LCD_PrintString16(0,320,chars, sizeof(chars));
+				  LCD_PrintString16(0,320,chars, sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x18) {
 				  USB_HID_Send_Consumer_Control(1, 0x02); // Volume down control
@@ -154,7 +154,7 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Volume down";
-				  LCD_PrintString16(100,320,chars,sizeof(chars));
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x5e) {
 				  USB_HID_Send_Consumer_Control(1, 0x04); // Mute
@@ -162,7 +162,7 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Mute";
-				  LCD_PrintString16(100,320,chars,sizeof(chars));
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x16) {
 				  USB_HID_Send_Consumer_Control(1, 0x08); // Brightness up
@@ -170,7 +170,7 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Bright down";
-				  LCD_PrintString16(100,320,chars,sizeof(chars));
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x19) {
 				  USB_HID_Send_Consumer_Control(1, 0x10); // Brightness down
@@ -178,7 +178,7 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Bright up";
-				  LCD_PrintString16(100,320,chars,sizeof(chars));
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x46) {
 				  USB_HID_Send_Consumer_Control(2, 0x02); // Sleep
@@ -186,10 +186,27 @@ int main(void)
 				  USB_HID_Send_Consumer_Control(2, 0x00); // Release
 
 				  char chars[] = "Sleep";
-				  LCD_PrintString16(100,320,chars,sizeof(chars));
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
+
+			  } else if (last_cmd == 0x45) {
+				  USB_HID_Send_Consumer_Control(2, 0x04); // Wakeup
+				  HAL_Delay(50); // Short press
+				  USB_HID_Send_Consumer_Control(2, 0x00); // Release
+
+				  char chars[] = "Wake up";
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
+
+			  } else if (last_cmd == 0x47) {
+				  USB_HID_Send_Consumer_Control(2, 0x01); // Shutdown
+				  HAL_Delay(50); // Short press
+				  USB_HID_Send_Consumer_Control(2, 0x00); // Release
+
+				  char chars[] = "Shutdown ;)";
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else {
-				  LCD_PrintString16(100,320,"            ",12);
+				  char chars[] = "            ";
+				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 			  }
 		  }
 		  LCD_PrintUnsigned32Hex(70,320, last_cmd);

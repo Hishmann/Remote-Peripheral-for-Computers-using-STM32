@@ -1,2 +1,0 @@
-../Core/lcd_utilities/lcd_util.c:3:6:LCD_PrintString16	32	static
-../Core/lcd_utilities/lcd_util.c:10:6:LCD_PrintUnsigned32Hex	40	static

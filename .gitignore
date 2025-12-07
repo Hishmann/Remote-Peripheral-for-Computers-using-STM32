@@ -1,13 +1,25 @@
+# --- Build Artifacts ---
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.d
+*.su
+*.ld
+
+# --- IDE Settings ---
+.settings/
+.metadata/
+*.launch
+
+# --- Temporary/Junk Files ---
 USB_int.rar
+*.tmp
+*.bak
 
-./Debug
-
-.settings
-
-./Drivers/STM32F4xx_HAL_Driver
-
-STM32F407IGHX_FLASH.ld
-
-STM32F407IGHX_RAM.ld
-
-USB_int Debug.launch
+# --- CubeMX generated backup ---
+*.ioc.bak

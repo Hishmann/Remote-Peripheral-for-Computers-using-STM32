@@ -22,20 +22,53 @@ void EP0_RecP(uint8_t pckt_cnt, uint16_t bytes_trans) {
 }
 
 const uint8_t hid_report_desc[] = {
-    0x05, 0x0C,        // Usage Page (Consumer)
-    0x09, 0x01,        // Usage (Consumer Control)
-    0xA1, 0x01,        // Collection (Application)
-    0x09, 0xE9,        //   Usage (Volume Increment)
-    0x09, 0xEA,        //   Usage (Volume Decrement)
-    0x15, 0x00,        //   Logical Minimum (0)
-    0x25, 0x01,        //   Logical Maximum (1)
-    0x75, 0x01,        //   Report Size (1 bit)
-    0x95, 0x02,        //   Report Count (2 buttons)
-    0x81, 0x02,        //   Input (Data, Var, Abs)
-    0x75, 0x06,        //   Report Size (6 bits padding)
-    0x95, 0x01,        //   Report Count (1)
-    0x81, 0x03,        //   Input (Cnst, Var, Abs)
-    0xC0               // End Collection
+	// --- REPORT ID 1: CONSUMER CONTROL (Vol, Mute, Brightness) ---
+	0x05, 0x0C,        // Usage Page (Consumer)
+	0x09, 0x01,        // Usage (Consumer Control)
+	0xA1, 0x01,        // Collection (Application)
+
+	0x85, 0x01,        //   REPORT ID (1)
+
+	0x09, 0xE9,        //   Usage (Volume Increment)      <- Bit 0
+	0x09, 0xEA,        //   Usage (Volume Decrement)      <- Bit 1
+	0x09, 0xE2,        //   Usage (Mute)                  <- Bit 2
+	0x09, 0x6F,        //   Usage (Brightness Increment)  <- Bit 3
+	0x09, 0x70,        //   Usage (Brightness Decrement)  <- Bit 4
+
+	0x15, 0x00,        //   Logical Minimum (0)
+	0x25, 0x01,        //   Logical Maximum (1)
+	0x75, 0x01,        //   Report Size (1 bit)
+	0x95, 0x05,        //   Report Count (5 buttons)
+	0x81, 0x02,        //   Input (Data, Var, Abs)
+
+	0x75, 0x03,        //   Report Size (3 bits) - Padding to fill byte
+	0x95, 0x01,        //   Report Count (1)
+	0x81, 0x03,        //   Input (Constant, Var, Abs)
+
+	0xC0,              // End Collection (Consumer)
+
+	// --- REPORT ID 2: SYSTEM CONTROL (Shutdown, Sleep) ---
+	0x05, 0x01,        // Usage Page (Generic Desktop)
+	0x09, 0x80,        // Usage (System Control)
+	0xA1, 0x01,        // Collection (Application)
+
+	0x85, 0x02,        //   REPORT ID (2)
+
+	0x09, 0x81,        //   Usage (System Power Down)     <- Bit 0
+	0x09, 0x82,        //   Usage (System Sleep)          <- Bit 1
+	0x09, 0x83,        //   Usage (System Wake Up)        <- Bit 2
+
+	0x15, 0x00,        //   Logical Minimum (0)
+	0x25, 0x01,        //   Logical Maximum (1)
+	0x75, 0x01,        //   Report Size (1 bit)
+	0x95, 0x03,        //   Report Count (3 buttons)
+	0x81, 0x02,        //   Input (Data, Var, Abs)
+
+	0x75, 0x05,        //   Report Size (5 bits) - Padding
+	0x95, 0x01,        //   Report Count (1)
+	0x81, 0x03,        //   Input (Constant)
+
+	0xC0               // End Collection (System)
 };
 
 Device_Descriptor device_descriptor = {
@@ -292,13 +325,16 @@ void USB_Setup_Process(void) {
 	return;
 }
 
-void USB_HID_Send_Consumer_Control(uint8_t cmd) {
+void USB_HID_Send_Consumer_Control(uint8_t report_id, uint8_t cmd) {
 	if (USB_OTG_FS_IE1->DIEPCTL & (1 << 31)) {
 		return;
 	}
     // Write cmd to FIFO 1 (Consumer Control)
-    USB_OTG_FS_IE1->DIEPTSIZ = (1 << 19) | 1; // 1 packet, 1 byte
+    USB_OTG_FS_IE1->DIEPTSIZ = (1 << 19) | 2; // 1 packet, 1 byte
     USB_OTG_FS_IE1->DIEPCTL |= (1 << 31) | (1 << 26); // Enable, CNAK
-    USB_OTG_FS_TX1_FIFO[0] = (uint32_t)cmd;
+
+    uint32_t payload = (uint32_t)report_id | ((uint32_t)cmd << 8);
+
+    USB_OTG_FS_TX1_FIFO[0] = payload;
 }
 

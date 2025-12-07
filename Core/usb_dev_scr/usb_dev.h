@@ -125,6 +125,6 @@ void USB_Setup_Process(void);
 void EP0_SendP(uint8_t pckt_cnt, uint16_t bytes_trans);
 void EP0_RecP(uint8_t pckt_cnt, uint16_t bytes_trans);
 
-void USB_HID_Send_Consumer_Control(uint8_t cmd);
+void USB_HID_Send_Consumer_Control(uint8_t report_id, uint8_t cmd);
 
 #endif

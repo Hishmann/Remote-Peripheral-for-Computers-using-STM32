@@ -1,8 +1,8 @@
 ../Core/usb_dev_scr/usb_dev.c:12:6:EP0_SendP	1
 ../Core/usb_dev_scr/usb_dev.c:19:6:EP0_RecP	1
-../Core/usb_dev_scr/usb_dev.c:106:6:USB_Core_Init	1
-../Core/usb_dev_scr/usb_dev.c:141:6:USB_Device_Init	1
-../Core/usb_dev_scr/usb_dev.c:161:6:USB_Post_Reset_Pre_Enum	1
-../Core/usb_dev_scr/usb_dev.c:186:6:USB_WriteFIFO	5
-../Core/usb_dev_scr/usb_dev.c:203:6:USB_Setup_Process	12
-../Core/usb_dev_scr/usb_dev.c:295:6:USB_HID_Send_Consumer_Control	2
+../Core/usb_dev_scr/usb_dev.c:139:6:USB_Core_Init	1
+../Core/usb_dev_scr/usb_dev.c:174:6:USB_Device_Init	1
+../Core/usb_dev_scr/usb_dev.c:194:6:USB_Post_Reset_Pre_Enum	1
+../Core/usb_dev_scr/usb_dev.c:219:6:USB_WriteFIFO	5
+../Core/usb_dev_scr/usb_dev.c:236:6:USB_Setup_Process	12
+../Core/usb_dev_scr/usb_dev.c:328:6:USB_HID_Send_Consumer_Control	2

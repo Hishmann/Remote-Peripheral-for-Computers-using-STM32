@@ -231,6 +231,7 @@ void OTG_FS_IRQHandler(void) {
     if (status & USB_OTG_GINTSTS_USBRST) {
     	USB_OTG_FS->GINTSTS |= USB_OTG_GINTSTS_USBRST; // clear interrupt
 
+    	USB_OTG_FS_D->DCFG &= ~(0x7F << 4);
     	usb_is_configured = 0;
 
     	USB_Post_Reset_Pre_Enum();

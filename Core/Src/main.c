@@ -117,9 +117,11 @@ int main(void)
   USB_Device_Init();
 
   if (USB_OTG_FS -> GINTSTS & 1) {
-	  LCD_PrintString16(220,320,"HOS",3);
+	  char mode[] = "[Host mode]";
+	  LCD_PrintString16(220,320,mode,sizeof(mode)-1);
   } else {
-	  LCD_PrintString16(220,320,"DEV",3);
+	  char mode[] = "[Device mode]";
+	  LCD_PrintString16(220,320,mode,sizeof(mode)-1);
   }
 
 
@@ -138,17 +140,25 @@ int main(void)
 //		  printf("1\n");
 	  }
 
+	  if (usb_is_configured == 1) {
+		  char dev_ready[] = "[Ready to use]";
+		  LCD_PrintString16(0,320,dev_ready, sizeof(dev_ready)-1);
+	  }
+
 	  if (!cmd_proc) {
 		  if (usb_is_configured == 1) {
-			  if (last_cmd == 0x0C) {
+
+			  LCD_PrintString16(100,320,"                    ", 20);
+
+			  if (last_cmd == 0x18) {
 				  USB_HID_Send_Consumer_Control(1, 0x01); // Volume up control
 				  HAL_Delay(50); // Short press
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
 				  char chars[] = "Volume up";
-				  LCD_PrintString16(0,320,chars, sizeof(chars)-1);
+				  LCD_PrintString16(100,320,chars, sizeof(chars)-1);
 
-			  } else if (last_cmd == 0x18) {
+			  } else if (last_cmd == 0x0C) {
 				  USB_HID_Send_Consumer_Control(1, 0x02); // Volume down control
 				  HAL_Delay(50); // Short press
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
@@ -164,20 +174,20 @@ int main(void)
 				  char chars[] = "Mute";
 				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
-			  } else if (last_cmd == 0x16) {
+			  } else if (last_cmd == 0x19) {
 				  USB_HID_Send_Consumer_Control(1, 0x08); // Brightness up
 				  HAL_Delay(50); // Short press
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
-				  char chars[] = "Bright down";
+				  char chars[] = "Bright up";
 				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
-			  } else if (last_cmd == 0x19) {
+			  } else if (last_cmd == 0x16) {
 				  USB_HID_Send_Consumer_Control(1, 0x10); // Brightness down
 				  HAL_Delay(50); // Short press
 				  USB_HID_Send_Consumer_Control(1, 0x00); // Release
 
-				  char chars[] = "Bright up";
+				  char chars[] = "Bright down";
 				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
 			  } else if (last_cmd == 0x46) {
@@ -201,15 +211,12 @@ int main(void)
 				  HAL_Delay(50); // Short press
 				  USB_HID_Send_Consumer_Control(2, 0x00); // Release
 
-				  char chars[] = "Shutdown ;)";
+				  char chars[] = "Shutdown :)";
 				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 
-			  } else {
-				  char chars[] = "            ";
-				  LCD_PrintString16(100,320,chars,sizeof(chars)-1);
 			  }
 		  }
-		  LCD_PrintUnsigned32Hex(70,320, last_cmd);
+//		  LCD_PrintUnsigned32Hex(70,320, last_cmd);
 		  cmd_proc = 1;
 	  }
 	  HAL_Delay(200);
@@ -299,7 +306,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		// 2. Decode bits if receiving
 		if (receiving)
 		{
-			// NEC protocol sends 560us LOW + variable HIGH
+			// NEC protocol sends 560us LOW + ( variable 1.68ms HIGH [1]  or 560us LOW [0])
 			if (pulse_duration >= 2200 && pulse_duration <= 2350) {
 				// Bit = 1
 				ir_data |= (1UL << bit_index);

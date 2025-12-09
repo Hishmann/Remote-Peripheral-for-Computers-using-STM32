@@ -281,12 +281,12 @@ void OTG_FS_IRQHandler(void) {
 				}
 			}
 
-			LCD_PrintString16(0, 320, "PKT 6 ", 6);
+//			LCD_PrintString16(0, 320, "PKT 6 ", 6);
 		} else if (pktsts == 4) {
 			// SETUP transaction completed
 			USB_Setup_Process();
 
-			LCD_PrintString16(0, 200, "PKT 4 ", 6);
+//			LCD_PrintString16(0, 200, "PKT 4 ", 6);
 
 		} else if (pktsts == 2) {
 			// OUT data packet received
@@ -295,7 +295,8 @@ void OTG_FS_IRQHandler(void) {
 		} else if (pktsts == 3) {
 			// OUT transfer completed
 			for(int i=0; i < (bcnt+3)/4; i++) { volatile uint32_t t = USB_OTG_FS_RX_FIFO[0]; (void)t; } // Flush OUT data
-			LCD_PrintString16(0, 100, "PKT 3 ", 6);
+
+//			LCD_PrintString16(0, 100, "PKT 3 ", 6);
 
 		} else if (pktsts == 1) {
 			// Global NAK

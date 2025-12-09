@@ -253,7 +253,7 @@ void USB_Setup_Process(void) {
 				USB_OTG_FS_D->DCFG &= ~(0x7F << 4);     // Clear old address
 				USB_OTG_FS_D->DCFG |= (dev_addr_pending << 4); // Set new address
 
-				LCD_PrintString16(200, 320, "add_set", 7);
+//				LCD_PrintString16(200, 320, "add_set", 7);
 
 				EP0_SendP(1,0); // Send Status IN (ACK)
 				// Note: We do NOT write to DCFG here. We wait for the ZLP to finish.
